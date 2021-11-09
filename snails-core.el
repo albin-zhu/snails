@@ -242,7 +242,7 @@
   "The prefix/backends pair."
   :type 'cons)
 
-(defcustom snails-input-buffer-text-scale 1.25
+(defcustom snails-input-buffer-text-scale 0.5
   "The font scale of input buffer."
   :type 'float)
 
@@ -749,7 +749,7 @@ or set it with any string you want."
              (frame-visible-p snails-frame))
       (setq snails-frame
             (make-frame
-             '((parent-frame . (window-frame))
+             '((parent-frame . snails-init-frame)
                (skip-taskbar . t)
                (minibuffer . nil)
                (visibility . nil)
@@ -1010,8 +1010,9 @@ or set it with any string you want."
                 (insert (format "%s" (funcall candidate-render-icon-func (nth 0 candiate)))))
 
               ;; Insert indent char.
-              (insert " ")
-              (put-text-property (point) (- (point) 1) 'display (snails-indent-pixel 60))
+              (when (featurep 'all-the-icons)
+                (insert " ")
+                (put-text-property (point) (- (point) 1) 'display (snails-indent-pixel 60)))
 
               ;; Render candidate display name.
               (insert (string-trim (nth 0 candiate)))
@@ -1435,7 +1436,7 @@ And render result when subprocess finish search."
 (defun snails-frame-is-active-p ()
   (and snails-frame
        (frame-visible-p snails-frame)
-       (eq (window-frame (selected-window)) snails-frame)))
+       (eq (window-frame) snails-frame)))
 
 (defun snails-frame-is-visible-p ()
   (and snails-frame
